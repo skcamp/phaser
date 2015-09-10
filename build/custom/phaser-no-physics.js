@@ -7,7 +7,7 @@
 *
 * Phaser - http://phaser.io
 *
-* v2.4.3 "Coramen" - Built: Mon Aug 24 2015 13:54:29
+* v2.4.3 "Coramen" - Built: Thu Sep 10 2015 10:18:12
 *
 * By Richard Davey http://www.photonstorm.com @photonstorm
 *
@@ -2456,21 +2456,21 @@ PIXI.PolyK._convex = function(ax, ay, bx, by, cx, cy, sign)
 */
 
 /**
-* The CanvasPool is a global static object that allows Pixi and Phaser to pool
+* The CanvasPool is a global static object that allows Pixi and Phaser to pool canvas DOM elements.
 *
-* @class PIXI.CanvasPool
+* @class CanvasPool
 * @static
 */
 PIXI.CanvasPool = {
 
     /**
+    * Creates a new Canvas DOM element, or pulls one from the pool if free.
     * 
-    * 
-    * @method PIXI.CanvasPool.create
+    * @method create
     * @static
-    * @param {any} parent - The parent of the canvas element.
-    * @param {number} width - The width of the canvas element.
-    * @param {number} height - The height of the canvas element.
+    * @param parent {any} The parent of the canvas element.
+    * @param width {number} The width of the canvas element.
+    * @param height {number} The height of the canvas element.
     * @return {HTMLCanvasElement} The canvas element.
     */
     create: function (parent, width, height) {
@@ -2488,16 +2488,12 @@ PIXI.CanvasPool = {
             PIXI.CanvasPool.pool.push(container);
 
             canvas = container.canvas;
-
-            // console.log('CanvasPool created', PIXI.CanvasPool.pool.length);
         }
         else
         {
             PIXI.CanvasPool.pool[idx].parent = parent;
 
             canvas = PIXI.CanvasPool.pool[idx].canvas;
-
-            // console.log('CanvasPool recycled', idx);
         }
 
         if (width !== undefined)
@@ -2510,6 +2506,13 @@ PIXI.CanvasPool = {
 
     },
 
+    /**
+    * Gets the first free canvas index from the pool.
+    * 
+    * @method getFirst
+    * @static
+    * @return {number}
+    */
     getFirst: function () {
 
         var pool = PIXI.CanvasPool.pool;
@@ -2526,6 +2529,13 @@ PIXI.CanvasPool = {
 
     },
 
+    /**
+    * Removes the parent from a canvas element from the pool, freeing it up for re-use.
+    * 
+    * @method remove
+    * @param parent {any} The parent of the canvas element.
+    * @static
+    */
     remove: function (parent) {
 
         var pool = PIXI.CanvasPool.pool;
@@ -2535,13 +2545,18 @@ PIXI.CanvasPool = {
             if (pool[i].parent === parent)
             {
                 pool[i].parent = null;
-
-                // console.log('CanvasPool removed', i);
             }
         }
 
     },
 
+    /**
+    * Removes the parent from a canvas element from the pool, freeing it up for re-use.
+    * 
+    * @method removeByCanvas
+    * @param canvas {HTMLCanvasElement} The canvas element to remove
+    * @static
+    */
     removeByCanvas: function (canvas) {
 
         var pool = PIXI.CanvasPool.pool;
@@ -2556,6 +2571,13 @@ PIXI.CanvasPool = {
 
     },
 
+    /**
+    * Gets the total number of used canvas elements in the pool.
+    * 
+    * @method getTotal
+    * @static
+    * @return {number} The number of in-use (parented) canvas elements in the pool.
+    */
     getTotal: function () {
 
         var pool = PIXI.CanvasPool.pool;
@@ -2573,6 +2595,13 @@ PIXI.CanvasPool = {
 
     },
 
+    /**
+    * Gets the total number of free canvas elements in the pool.
+    * 
+    * @method getFree
+    * @static
+    * @return {number} The number of free (un-parented) canvas elements in the pool.
+    */
     getFree: function () {
 
         var pool = PIXI.CanvasPool.pool;
@@ -2592,6 +2621,13 @@ PIXI.CanvasPool = {
 
 };
 
+/**
+ * The pool into which the canvas dom elements are placed.
+ *
+ * @property pool
+ * @type Array
+ * @static
+ */
 PIXI.CanvasPool.pool = [];
 
 /**
@@ -27940,15 +27976,6 @@ Phaser.DeviceButton = function (parent, buttonCode) {
     this.timeDown = 0;
 
     /**
-    * If the button is down this value holds the duration of that button press and is constantly updated.
-    * If the button is up it holds the duration of the previous down session.
-    * The value is stored in milliseconds.
-    * @property {number} duration
-    * @default
-    */
-    this.duration = 0;
-
-    /**
     * @property {number} timeUp - The timestamp when the button was last released.
     * @default
     */
@@ -28044,7 +28071,6 @@ Phaser.DeviceButton.prototype = {
         this.isDown = true;
         this.isUp = false;
         this.timeDown = this.game.time.time;
-        this.duration = 0;
         this.repeats = 0;
 
         this.event = event;
@@ -28153,7 +28179,6 @@ Phaser.DeviceButton.prototype = {
         this.isUp = true;
 
         this.timeDown = this.game.time.time;
-        this.duration = 0;
         this.repeats = 0;
 
         this.altKey = false;
